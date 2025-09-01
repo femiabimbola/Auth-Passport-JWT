@@ -1,7 +1,8 @@
-import { drizzle } from 'drizzle-orm/node-postgres';
-import { Pool } from 'pg';
-import { config } from './config';
-import * as schema from './schema';
+import { drizzle } from "drizzle-orm/node-postgres";
+import { Pool } from "pg";
+import { config } from "./config";
+import * as schema from "./schema";
+import { eq } from "drizzle-orm";
 
 const pool = new Pool({
   connectionString: config.databaseUrl,
@@ -13,14 +14,12 @@ export const db = drizzle(pool, { schema });
 // Database query functions
 export async function findUserByEmail(email: string) {
   return db.query.users.findFirst({
-    where: (users, { eq }) => eq(users.email, email),
+    where: eq(schema.users.email, email),
   });
 }
 
 export async function findUserById(id: number) {
-  return db.query.users.findFirst({
-    where: (users, { eq }) => eq(users.id, id),
-  });
+  return db.query.users.findFirst({ where: eq(schema.users.id, id) });
 }
 
 export async function insertRefreshToken(userId: number, token: string, expiresAt: Date) {
@@ -29,10 +28,10 @@ export async function insertRefreshToken(userId: number, token: string, expiresA
 
 export async function findRefreshToken(token: string) {
   return db.query.refreshTokens.findFirst({
-    where: (tokens, { eq }) => eq(tokens.token, token),
+    where: eq(schema.refreshTokens.token, token),
   });
 }
 
 export async function deleteRefreshToken(token: string) {
-  await db.delete(schema.refreshTokens).where((tokens, { eq }) => eq(tokens.token, token));
+  await db.delete(schema.refreshTokens).where(eq(schema.refreshTokens.token, token));
 }
