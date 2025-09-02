@@ -6,9 +6,8 @@ import { User } from "./types";
 
 export const generateTokens = (user: User) => {
   const payload = { sub: user.id };
-  const accessTokenOptions: SignOptions = {
-    expiresIn: config.accessTokenExpiresIn as any,
-  };
+
+  const accessTokenOptions: SignOptions = { expiresIn: config.accessTokenExpiresIn as any };
   const refreshTokenOptions: SignOptions = {
     expiresIn: config.refreshTokenExpiresIn as any,
   };
